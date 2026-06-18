@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategic Management Accounting — Practice Quiz</title>
+<style>
+  :root {
+    --ink: #14201c;
+    --paper: #f6f3ec;
+    --panel: #fffdf8;
+    --line: #d8d2c4;
+    --accent: #1f6f54;      /* ledger green */
+    --accent-deep: #12453a;
+    --gold: #b8893b;
+    --correct: #1f6f54;
+    --correct-bg: #e7f1ec;
+    --wrong: #b23a30;
+    --wrong-bg: #f7e8e6;
+    --muted: #6b6557;
+    --shadow: 0 1px 0 rgba(20,32,28,.04), 0 8px 30px -16px rgba(20,32,28,.35);
+    --r: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #ece7da; --paper: #161a17; --panel: #1d231f; --line: #303a33;
+      --accent: #4fb38d; --accent-deep: #74c6a4; --gold: #d6a85c; --muted: #9a9486;
+      --correct: #4fb38d; --correct-bg: #1c2c25; --wrong: #e0786d; --wrong-bg: #2e211f;
+      --shadow: 0 8px 30px -16px rgba(0,0,0,.6);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    line-height: 1.55; padding: clamp(14px, 3vw, 40px);
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  /* Header */
+  header { margin-bottom: 26px; }
+  .eyebrow {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 10px;
+  }
+  h1 {
+    font-size: clamp(27px, 5.2vw, 40px); line-height: 1.08; margin: 0 0 8px;
+    letter-spacing: -.015em; font-weight: 600;
+  }
+  .sub { color: var(--muted); font-size: 15px; margin: 0; }
+  .rule { height: 2px; background: var(--ink); margin: 18px 0 0; opacity: .85; }
+
+  /* Progress */
+  .meta {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; margin: 18px 0 8px; flex-wrap: wrap;
+  }
+  .meta .count {
+    font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+    letter-spacing: .1em; color: var(--muted);
+  }
+  .meta .topic {
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent-deep); font-weight: 600;
+  }
+  .track { height: 4px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .bar { height: 100%; width: 0; background: var(--accent);
+         transition: width .35s cubic-bezier(.2,.7,.2,1); }
+
+  /* Card */
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--r);
+    box-shadow: var(--shadow); padding: clamp(20px, 4vw, 34px); margin-top: 22px;
+  }
+  .qnum {
+    font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+    color: var(--gold); letter-spacing: .1em; margin: 0 0 10px;
+  }
+  .qtext { font-size: clamp(18px, 2.6vw, 21px); margin: 0 0 20px; line-height: 1.4; }
+
+  .opts { display: grid; gap: 10px; }
+  .opt {
+    display: flex; gap: 13px; align-items: flex-start; width: 100%; text-align: left;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 16px; font: inherit; color: inherit; cursor: pointer;
+    transition: border-color .15s, background .15s, transform .05s;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:active:not(:disabled) { transform: translateY(1px); }
+  .opt:disabled { cursor: default; }
+  .opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .key {
+    flex: none; width: 26px; height: 26px; border-radius: 6px;
+    border: 1px solid var(--line); display: grid; place-items: center;
+    font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 600;
+    background: var(--panel); transition: inherit;
+  }
+  .opt.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .opt.correct .key { background: var(--correct); color: #fff; border-color: var(--correct); }
+  .opt.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+  .opt.wrong .key { background: var(--wrong); color: #fff; border-color: var(--wrong); }
+  .otext { padding-top: 2px; }
+
+  .feedback {
+    margin-top: 16px; padding: 14px 16px; border-radius: 8px; font-size: 15px;
+    border-left: 3px solid var(--accent); background: var(--correct-bg);
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.miss { border-left-color: var(--wrong); background: var(--wrong-bg); }
+  .feedback b { font-variant: small-caps; letter-spacing: .03em; }
+
+  /* Nav */
+  .nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; align-items:center;}
+  button.btn {
+    font: inherit; font-size: 15px; padding: 11px 22px; border-radius: 8px;
+    border: 1px solid var(--ink); background: var(--ink); color: var(--paper);
+    cursor: pointer; transition: opacity .15s, transform .05s;
+  }
+  button.btn:active { transform: translateY(1px); }
+  button.btn.ghost { background: transparent; color: var(--ink); }
+  button.btn:disabled { opacity: .35; cursor: not-allowed; }
+  button.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Results */
+  .results { text-align: center; padding: clamp(24px,5vw,44px); }
+  .score-big {
+    font-size: clamp(54px, 12vw, 88px); font-weight: 600; line-height: 1;
+    letter-spacing: -.03em; margin: 8px 0 4px; color: var(--accent);
+  }
+  .score-label { color: var(--muted); font-size: 15px; margin: 0 0 28px; }
+  .breakdown { display: grid; gap: 14px; text-align: left; margin: 26px 0 8px; }
+  .brow { }
+  .brow .blabel {
+    display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;
+  }
+  .brow .blabel .bscore { font-family: ui-monospace, Menlo, monospace; color: var(--muted); }
+  .btrack { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .bfill { height: 100%; background: var(--accent); border-radius: 99px; }
+  .footer-note {
+    margin-top: 34px; font-size: 12.5px; color: var(--muted);
+    border-top: 1px solid var(--line); padding-top: 16px; line-height: 1.5;
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Aston University · Strategic Management Accounting</p>
+    <h1>Practice Quiz</h1>
+    <p class="sub">Forty questions across costing &amp; ABC, performance measurement, strategic positioning, and budgeting. Pick an answer to see instant feedback.</p>
+    <div class="rule"></div>
+  </header>
+
+  <main id="app" aria-live="polite"></main>
+
+  <p class="footer-note">
+    Self-paced formative practice. Answers are revealed immediately with a short rationale.
+    Built as a teaching demonstration of AI-assisted assessment design.
+  </p>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ---- Section A: Costing & ABC/ABM ----
+  { topic:"Costing & ABC/ABM",
+    q:"The primary reason traditional absorption costing distorts product costs in a multi-product environment is that it:",
+    o:["Allocates direct labour incorrectly","Uses volume-based drivers to absorb overheads that are not volume-related","Ignores direct materials entirely","Treats all fixed costs as variable"],
+    a:1, e:"Distortion arises from spreading non-volume overheads (setups, inspections, ordering) over volume bases such as labour or machine hours." },
+  { topic:"Costing & ABC/ABM",
+    q:"Under Activity-Based Costing, a “cost driver” is best defined as:",
+    o:["Any item of overhead expenditure","A factor that causes the cost of an activity to change","The total cost of a production department","The basis used to value closing inventory"],
+    a:1, e:"A cost driver is the causal factor behind an activity's cost — e.g. number of setups drives setup cost." },
+  { topic:"Costing & ABC/ABM",
+    q:"Which of the following is a batch-level activity?",
+    o:["Machining each individual unit","Setting up a machine for a production run","Designing a new product","Maintaining the factory building"],
+    a:1, e:"Setups are incurred per batch regardless of batch size — the classic batch-level activity in the ABC hierarchy." },
+  { topic:"Costing & ABC/ABM",
+    q:"After switching from traditional costing to ABC, low-volume, complex products will typically:",
+    o:["Appear cheaper to produce","Appear more expensive to produce","Show no change in reported cost","Always become loss-making"],
+    a:1, e:"ABC reassigns overhead to the activities these products actually consume, usually raising their reported cost." },
+  { topic:"Costing & ABC/ABM",
+    q:"Activity-Based Management (ABM) primarily uses ABC information to:",
+    o:["Set statutory financial reporting policies","Improve processes and eliminate non-value-added activities","Calculate the corporation tax charge","Determine the weighted average cost of capital"],
+    a:1, e:"ABM applies ABC data operationally — to redesign processes and strip out non-value-added work." },
+  { topic:"Costing & ABC/ABM",
+    q:"Which of the following is a facility-sustaining cost?",
+    o:["Machine setup","Purchase ordering","Factory rent and general management","Per-unit materials handling"],
+    a:2, e:"Facility-sustaining costs support the plant as a whole and cannot be traced to products, batches or units." },
+  { topic:"Costing & ABC/ABM",
+    q:"A recognised drawback of implementing ABC is that:",
+    o:["It cannot be applied to service businesses","It is costly and time-consuming to design and maintain","It always produces the same answer as absorption costing","It ignores overheads completely"],
+    a:1, e:"The data-collection and maintenance burden is the main practical objection to full ABC." },
+  { topic:"Costing & ABC/ABM",
+    q:"In customer profitability analysis using ABC, a customer placing many small, urgent orders is likely to be:",
+    o:["More profitable than average","Less profitable due to high activity consumption","Unaffected by ordering behaviour","Profitable only under absorption costing"],
+    a:1, e:"Frequent small/urgent orders consume disproportionate ordering, handling and expediting activity, eroding margin." },
+  { topic:"Costing & ABC/ABM",
+    q:"Time-Driven ABC differs from conventional ABC by:",
+    o:["Ignoring time as a driver","Using a practical-capacity cost rate and time equations per transaction","Allocating all costs to units only","Removing the need for any cost drivers"],
+    a:1, e:"TDABC estimates the time each transaction takes and prices it at the cost per unit of practical capacity." },
+  { topic:"Costing & ABC/ABM",
+    q:"A “value-added” activity is one that:",
+    o:["Increases internal administrative work","The customer is willing to pay for","Only managers consider important","Adds storage time to the process"],
+    a:1, e:"Value is judged from the customer's perspective — work they would willingly pay for." },
+
+  // ---- Section B: Performance Measurement ----
+  { topic:"Performance Measurement",
+    q:"The four perspectives of Kaplan and Norton's Balanced Scorecard are financial, customer, internal business process, and:",
+    o:["Competitor","Learning and growth","Regulatory","Shareholder"],
+    a:1, e:"Learning and growth underpins the other three perspectives in the scorecard's cause-and-effect logic." },
+  { topic:"Performance Measurement",
+    q:"A key criticism of relying solely on financial performance measures is that they:",
+    o:["Are too forward-looking","Are lagging indicators that may encourage short-termism","Cannot be audited","Are never used by managers"],
+    a:1, e:"Financial measures report the past; over-reliance can drive short-term decisions at the expense of long-term value." },
+  { topic:"Performance Measurement",
+    q:"In the Balanced Scorecard, customer-perspective measures are best understood as:",
+    o:["Purely lagging measures","Leading indicators of future financial results","Identical to financial measures","Irrelevant to strategy"],
+    a:1, e:"Customer satisfaction and retention signal future revenue — they lead the financial outcomes." },
+  { topic:"Performance Measurement",
+    q:"A “strategy map” in the BSC framework illustrates:",
+    o:["The organisation's office layout","Cause-and-effect linkages between objectives across the four perspectives","The annual budget timetable","The supply chain only"],
+    a:1, e:"A strategy map visualises how learning, process, customer and financial objectives causally connect." },
+  { topic:"Performance Measurement",
+    q:"Residual Income (RI) is calculated as:",
+    o:["Controllable profit ÷ capital employed","Controllable profit − (imputed interest rate × capital employed)","Sales − variable costs","Net profit × cost of capital"],
+    a:1, e:"RI is an absolute £ measure: profit after charging an imputed cost for the capital employed." },
+  { topic:"Performance Measurement",
+    q:"A weakness of Return on Investment (ROI) as a divisional measure is that it may:",
+    o:["Encourage rejection of projects that beat the cost of capital but lower the divisional average ROI","Always promote goal congruence","Ignore capital employed","Be impossible to calculate"],
+    a:0, e:"ROI's classic dysfunctional incentive: a manager rejects a value-adding project because it dilutes the division's average." },
+  { topic:"Performance Measurement",
+    q:"Economic Value Added (EVA®) adjusts accounting profit by:",
+    o:["Removing all taxes","Capitalising certain costs (e.g. R&D) and charging for the capital used","Ignoring the cost of capital","Using historical cost only"],
+    a:1, e:"EVA makes accounting adjustments and deducts a capital charge to approximate true economic profit." },
+  { topic:"Performance Measurement",
+    q:"A balanced set of KPIs should ideally be:",
+    o:["Exclusively financial","Aligned to strategy with both leading and lagging measures","As numerous as possible","Set independently of strategic objectives"],
+    a:1, e:"Good KPI sets mix leading and lagging measures and trace directly back to strategy." },
+  { topic:"Performance Measurement",
+    q:"“Gaming” of performance measures refers to:",
+    o:["Using simulation software","Manipulating actions to hit a target without serving the underlying objective","Benchmarking against competitors","Rewarding teamwork"],
+    a:1, e:"Gaming means meeting the letter of a target while defeating its purpose." },
+  { topic:"Performance Measurement",
+    q:"Benchmarking is most accurately described as:",
+    o:["Setting a flexible budget","Comparing processes and performance against best practice, internally or externally","Calculating standard costs","A method of overhead absorption"],
+    a:1, e:"Benchmarking measures performance against a best-practice reference point to find improvement gaps." },
+
+  // ---- Section C: Strategic Positioning & Value Chain ----
+  { topic:"Strategic Positioning",
+    q:"Porter's three generic strategies are cost leadership, differentiation, and:",
+    o:["Diversification","Focus (niche)","Vertical integration","Market penetration"],
+    a:1, e:"Focus targets a narrow segment via either a cost or differentiation emphasis." },
+  { topic:"Strategic Positioning",
+    q:"A firm “stuck in the middle” (per Porter) is one that:",
+    o:["Has the lowest costs in the industry","Fails to achieve either cost leadership or differentiation","Dominates a profitable niche","Has the highest market share"],
+    a:1, e:"Without a clear generic strategy, the firm is out-competed on both price and value." },
+  { topic:"Strategic Positioning",
+    q:"Porter's value chain distinguishes between:",
+    o:["Fixed and variable activities","Primary and support activities","Product and period costs","Direct and indirect labour"],
+    a:1, e:"Primary activities (inbound logistics → service) are supported by procurement, HR, technology and infrastructure." },
+  { topic:"Strategic Positioning",
+    q:"Strategic cost management seeks competitive advantage by:",
+    o:["Minimising every cost regardless of strategy","Managing costs consistently with the firm's chosen strategic position","Eliminating the finance function","Maximising short-term profit only"],
+    a:1, e:"Costs are managed to support the strategy — a differentiator may rationally spend more in some areas." },
+  { topic:"Strategic Positioning",
+    q:"Target costing is best described as:",
+    o:["Cost plus a desired margin","Competitive market price less required profit margin = allowable cost","The standard cost of materials","Actual cost adjusted for inflation"],
+    a:1, e:"Target costing works backwards from the market price to an allowable cost the product must be designed to meet." },
+  { topic:"Strategic Positioning",
+    q:"Kaizen costing focuses on cost reduction:",
+    o:["At the design stage only","During manufacturing, through continuous improvement","After the product is discontinued","Through one-off restructuring"],
+    a:1, e:"Kaizen pursues small, continuous reductions during the production phase, complementing target costing at design." },
+  { topic:"Strategic Positioning",
+    q:"Life-cycle costing is valuable strategically because it:",
+    o:["Considers only the production phase","Accounts for all costs from R&D to abandonment, informing pricing and design","Ignores pre-production costs","Applies only to services"],
+    a:1, e:"Capturing the whole life cycle exposes committed costs locked in early at the design stage." },
+  { topic:"Strategic Positioning",
+    q:"In the structural sense (Shank & Govindarajan), strategic cost drivers include:",
+    o:["Only the number of units produced","Scale, scope, experience, technology and complexity","Direct labour hours alone","The external audit fee"],
+    a:1, e:"Structural drivers reflect strategic choices about the firm's economic structure, not just output volume." },
+  { topic:"Strategic Positioning",
+    q:"Competitor analysis within SMA typically uses techniques such as:",
+    o:["Reverse engineering and competitor cost estimation","Statutory consolidation","Cash-flow hedging","Internal payroll review"],
+    a:0, e:"Estimating rivals' cost structures — including by reverse-engineering products — informs strategic positioning." },
+  { topic:"Strategic Positioning",
+    q:"A differentiation strategy is best supported by management accounting information that:",
+    o:["Tracks only unit cost","Highlights the cost and value of features customers will pay a premium for","Ignores customers","Focuses solely on minimising overheads"],
+    a:1, e:"Differentiators need to know which features create premium value and what they cost to provide." },
+
+  // ---- Section D: Budgeting & Variance Analysis ----
+  { topic:"Budgeting & Variances",
+    q:"A flexible budget is one that:",
+    o:["Is fixed for the whole year","Is adjusted to reflect the actual level of activity achieved","Cannot be changed once set","Excludes all variable costs"],
+    a:1, e:"Flexing restates the budget at the actual activity level so variances compare like with like." },
+  { topic:"Budgeting & Variances",
+    q:"The sales volume variance measures the difference between:",
+    o:["Actual and standard selling price","Budgeted and flexed profit (or contribution) due to volume","Actual and standard material usage","Fixed and variable overhead"],
+    a:1, e:"It isolates the profit effect of selling more or fewer units than budgeted, valued at standard margin." },
+  { topic:"Budgeting & Variances",
+    q:"An adverse direct material price variance most likely arises from:",
+    o:["Buying below the standard price","Paying more per unit of material than standard","Using less material than standard","Higher output volume"],
+    a:1, e:"Price variance = (standard price − actual price) × actual quantity purchased; paying more is adverse." },
+  { topic:"Budgeting & Variances",
+    q:"The direct labour efficiency variance is calculated as:",
+    o:["(Standard hours for actual output − actual hours) × standard rate","(Standard rate − actual rate) × actual hours","Actual hours × actual rate","Budgeted hours × standard rate"],
+    a:0, e:"Efficiency variance values the hours saved or lost (vs. standard for output) at the standard labour rate." },
+  { topic:"Budgeting & Variances",
+    q:"A favourable material usage variance combined with an adverse price variance most plausibly indicates:",
+    o:["An accounting error","Use of a higher-grade material — dearer to buy but used more efficiently","That standards are irrelevant","Overproduction of finished goods"],
+    a:1, e:"Paying more for better material that yields less waste links the adverse price and favourable usage variances." },
+  { topic:"Budgeting & Variances",
+    q:"The fixed overhead volume variance arises only under:",
+    o:["Marginal (variable) costing","Absorption costing","Activity-based costing exclusively","Cash budgeting"],
+    a:1, e:"Only absorption costing absorbs fixed overhead into units, creating over/under-absorption on volume." },
+  { topic:"Budgeting & Variances",
+    q:"A criticism of traditional incremental budgeting is that it:",
+    o:["Requires every cost to be justified from zero","Tends to perpetuate past inefficiencies (“last year plus x%”)","Cannot be prepared annually","Always reduces costs"],
+    a:1, e:"Building on last year's figures carries forward slack and embedded inefficiency." },
+  { topic:"Budgeting & Variances",
+    q:"Zero-Based Budgeting (ZBB) requires that:",
+    o:["The prior year is the automatic starting point","Each activity is justified and ranked as if starting from scratch","No budgets are prepared","Only capital expenditure is reviewed"],
+    a:1, e:"ZBB rebuilds the budget from zero, forcing justification and prioritisation of every activity." },
+  { topic:"Budgeting & Variances",
+    q:"“Beyond Budgeting” advocates argue that traditional budgets:",
+    o:["Are perfectly suited to volatile environments","Can be rigid, encourage gaming, and hinder responsiveness","Should merely be prepared more often and in more detail","Eliminate all need for forecasting"],
+    a:1, e:"The critique is that fixed annual budgets ossify behaviour and invite gaming in fast-moving markets." },
+  { topic:"Budgeting & Variances",
+    q:"Planning and operational variance analysis separates variances into those due to:",
+    o:["Inflation only","Faulty original standards (planning) versus operational performance (control)","Sales and purchasing only","Fixed and variable elements"],
+    a:1, e:"It splits the total variance into an uncontrollable standard-setting error and the controllable operational part." },
+];
+
+const app = document.getElementById('app');
+let idx = 0;
+const answers = new Array(QUESTIONS.length).fill(null); // stores chosen index
+
+function render() {
+  if (idx >= QUESTIONS.length) return renderResults();
+  const Q = QUESTIONS[idx];
+  const chosen = answers[idx];
+  const answered = chosen !== null;
+  const pct = Math.round((idx) / QUESTIONS.length * 100);
+
+  app.innerHTML = `
+    <div class="meta">
+      <span class="count">Question ${String(idx+1).padStart(2,'0')} / ${QUESTIONS.length}</span>
+      <span class="topic">${Q.topic}</span>
+    </div>
+    <div class="track"><div class="bar" style="width:${pct}%"></div></div>
+
+    <section class="card">
+      <p class="qnum">Q${idx+1}</p>
+      <h2 class="qtext">${Q.q}</h2>
+      <div class="opts" role="group" aria-label="Answer choices">
+        ${Q.o.map((opt,i) => {
+          const letter = String.fromCharCode(65+i);
+          let cls = 'opt';
+          if (answered) {
+            if (i === Q.a) cls += ' correct';
+            else if (i === chosen) cls += ' wrong';
+          }
+          return `<button class="${cls}" data-i="${i}" ${answered?'disabled':''}>
+                    <span class="key">${letter}</span>
+                    <span class="otext">${opt}</span>
+                  </button>`;
+        }).join('')}
+      </div>
+      <div class="feedback ${answered ? 'show' : ''} ${answered && chosen!==Q.a ? 'miss':''}">
+        <b>${answered && chosen===Q.a ? 'Correct.' : 'Not quite.'}</b>
+        ${answered && chosen!==Q.a ? `The answer is ${String.fromCharCode(65+Q.a)}. ` : ''}${Q.e}
+      </div>
+      <div class="nav">
+        <button class="btn ghost" id="prev" ${idx===0?'disabled':''}>← Previous</button>
+        <button class="btn" id="next" ${!answered?'disabled':''}>
+          ${idx===QUESTIONS.length-1 ? 'See results' : 'Next →'}
+        </button>
+      </div>
+    </section>`;
+
+  app.querySelectorAll('.opt').forEach(b => {
+    b.addEventListener('click', () => {
+      if (answers[idx] !== null) return;
+      answers[idx] = parseInt(b.dataset.i,10);
+      render();
+    });
+  });
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  if (prev) prev.onclick = () => { idx--; render(); };
+  if (next) next.onclick = () => { idx++; render(); };
+}
+
+function renderResults() {
+  const total = QUESTIONS.length;
+  const correct = answers.reduce((s,a,i)=> s + (a===QUESTIONS[i].a?1:0), 0);
+  const pct = Math.round(correct/total*100);
+
+  // per-topic
+  const topics = {};
+  QUESTIONS.forEach((Q,i)=>{
+    topics[Q.topic] ??= {c:0,t:0};
+    topics[Q.topic].t++;
+    if (answers[i]===Q.a) topics[Q.topic].c++;
+  });
+  const verdict = pct>=80 ? "Strong command of the material."
+                : pct>=60 ? "A solid base — review the weaker topics below."
+                : pct>=40 ? "Worth a focused revision pass before the exam."
+                : "Revisit the core readings, then retry.";
+
+  app.innerHTML = `
+    <section class="card results">
+      <p class="qnum">Your result</p>
+      <div class="score-big">${pct}%</div>
+      <p class="score-label">${correct} of ${total} correct · ${verdict}</p>
+      <div class="breakdown">
+        ${Object.entries(topics).map(([name,d])=>{
+          const p = Math.round(d.c/d.t*100);
+          return `<div class="brow">
+            <div class="blabel"><span>${name}</span><span class="bscore">${d.c}/${d.t}</span></div>
+            <div class="btrack"><div class="bfill" style="width:${p}%"></div></div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="nav" style="justify-content:center; margin-top:30px;">
+        <button class="btn" id="restart">Retake quiz</button>
+      </div>
+    </section>`;
+  document.getElementById('restart').onclick = () => {
+    answers.fill(null); idx = 0; render();
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+}
+
+render();
+</script>
+</body>
+</html>
