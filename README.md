@@ -2,7 +2,7 @@
 
 An interactive, self-paced revision quiz for Strategic Management Accounting. Forty multiple-choice questions across four topic areas, with instant feedback, worked rationales, and a per-topic score breakdown.
 
-**▶ Live site:** https://YOUR-USERNAME.github.io/sma-quiz/
+**▶ Live site:** https://andrewprimmer.github.io/sma-quiz/
 
 ## Topics covered
 
